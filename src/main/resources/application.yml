@@ -1,0 +1,66 @@
+server:
+  port: 8080
+
+eureka:
+  client:
+    fetch-registry: false
+    register-with-eureka: false
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+# Gateway Route 노출 설정
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - "gateway"
+  endpoint:
+    gateway:
+      enabled: true
+
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      default-filters:
+        - name: GlobalFilter # GlobalFilter 설정
+          args:
+            baseMessage: Spring Cloud Gateway GlobalFilter
+            preLogger: true
+            postLogger: true
+      routes:
+        - id: board-service # board-rest-api 설정
+          uri: http://localhost:8081/
+          predicates:
+            - Path=/board/**
+#          filters:
+#            - name: BoardFilter # BoardFilter 설정
+#              args:
+#                baseMessage: Spring Cloud Gateway BoardFilter
+#                preLogger: true
+#                postLogger: true
+
+
+
+#        - id: user-svc
+#          uri: http://localhost:8082/
+#          predicates:
+#            - Path=/user/**
+#          filters:
+#            - name: UserFilter
+#              args:
+#                baseMessage: Spring Cloud Gateway UserFilter
+#                preLogger: true
+#                postLogger: true
+#        - id: cafe-svc
+#          uri: http://localhost:8083/
+#          predicates:
+#            - Path=/cafe/**
+#          filters:
+#            - name: CafeFilter
+#              args:
+#                baseMessage: Spring Cloud Gateway CafeFilter
+#                preLogger: true
+#                postLogger: true
